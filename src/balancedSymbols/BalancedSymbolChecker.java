@@ -53,8 +53,28 @@ public class BalancedSymbolChecker {
 		for (int i = 0; i < text.length(); i++) {
 			char curr = text.charAt(i);
 			
+			// if curr is a slash, that might indicate the beginning of a code comment,
+			// in which case we have to ignore that section
+			if (curr == '/') {
+				// 1. single line comment
+				if (text.charAt(i+1) == '/') {
+					// cycle through the file until a newline character (\n) is reached
+					i++;
+					while((text.charAt(i) != '\n') && i < text.length()) {
+						i++;
+					}
+				}
+				// 2. code comment block
+				else if (text.charAt(i+1) == '*') {
+					i++;
+					while(!(text.charAt(i) == '*' && text.charAt(i+1) == '/') && i < text.length()) {
+						i++;
+					}
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
-			if (curr == '(' || curr == '[' || curr == '{') {
+			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
 			} 
 			// else if curr is a closing char, then we need to see if it closes the previous opening char
@@ -199,22 +219,44 @@ public class BalancedSymbolChecker {
 	 * Identical to the logic of the previous method, except that in this one, rather than
 	 * printing each character out to the console, it stores the result in a String, which
 	 * is then returned at the end.
+	 * 
+	 * This method now, in addition to up above, removes code comments
 	 * @param String
 	 * @return String
 	 * @throws IllegalArgumentException
 	 */
-	public static String returnEachCharUntilError(String str) throws IllegalArgumentException {
-		if (str.length() == 0 || str == null)
+	public String removeComments() throws IllegalArgumentException {
+		if (text.length() == 0 || text == null)
 			throw new IllegalArgumentException("String provided cannot be null or have a length of 0");
 		
 		String ret = "";
 		LinkedListStack<Character> stack = new LinkedListStack<Character>();
 		
-		for (int i = 0; i < str.length(); i++) {
-			char curr = str.charAt(i);
+		for (int i = 0; i < text.length(); i++) {
+			char curr = text.charAt(i);
+			
+			// if curr is a slash, that might indicate the beginning of a code comment,
+			// in which case we have to ignore that section
+			if (curr == '/') {
+				// 1. single line comment
+				if (text.charAt(i+1) == '/') {
+					// cycle through the file until a newline character (\n) is reached
+					i++;
+					while((text.charAt(i) != '\n') && i < text.length()) {
+						i++;
+					}
+				}
+				// 2. code comment block
+				else if (text.charAt(i+1) == '*') {
+					i++;
+					while(!(text.charAt(i) == '*' && text.charAt(i+1) == '/') && i < text.length()) {
+						i++;
+					}
+				}
+			}
 			
 			// if curr is an opening char, add to the stack
-			if (curr == '(' || curr == '[' || curr == '{') {
+			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
 				ret += curr;
 			} 
@@ -263,28 +305,17 @@ public class BalancedSymbolChecker {
 
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
-//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
-		BalancedSymbolChecker BSC = new BalancedSymbolChecker("invalidFiles/invalid2.txt");
-//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("src/balancedSymbols/BalancedSymbolChecker.java");
 		
+		System.out.println("==========================================================");
+		System.out.println("Verifying if properly nested...");
+		System.out.println("==========================================================");
+		System.out.println(BSC.removeComments());
+		System.out.println("==========================================================");
+		System.out.println(BSC.verifyIfProperlyNested());
 //		System.out.println("\n==========================================================");
-//		System.out.println("Printing whole file...");
-//		System.out.println("==========================================================\n");
-//		System.out.println(BSC.text);
-//		System.out.println("\n==========================================================");
-//		System.out.println("Printing parentheses, brackets, and braces...");
-//		System.out.println("==========================================================\n");
-//		System.out.println(findCharsOfInterest(BSC.text));
-		System.out.println("==========================================================");
-//		System.out.println("Creating a stack object...");
-		System.out.println("Printing the file until an error occurs...");
-		System.out.println("==========================================================");
-//		System.out.println(createStackFromSpecialChars(findCharsOfInterest(BSC.text)).toStringReverse());
-//		System.out.println("Nested properly? " + verifyIfProperlyNested(BSC.text));
-		printEachCharUntilError(BSC.text);
-		System.out.println("\n==========================================================");
-		System.out.println(returnEachCharUntilError(BSC.text));
-		System.out.println("==========================================================");
+//		System.out.println(returnEachCharUntilError(BSC.text));
+//		System.out.println("==========================================================");
 //		System.out.println("END");
 //		System.out.println("==========================================================\n");
 		
