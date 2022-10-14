@@ -31,5 +31,12 @@ class UnitTests {
 		BSC = new BalancedSymbolChecker("invalidFiles/invalid4.txt");
 		assertFalse(BSC.verifyIfProperlyNested());
 	}
+	
+	@Test
+	void testCommentsRemoval() {
+		BalancedSymbolChecker Comments = new BalancedSymbolChecker("comments/Comments.java");
+		BalancedSymbolChecker NoComments = new BalancedSymbolChecker("comments/NoComments.java");
+		assertEquals(Comments.removeComments(), NoComments.keepComments(), "equal?");
+	}
 
 }

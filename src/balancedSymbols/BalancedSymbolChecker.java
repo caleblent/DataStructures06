@@ -73,6 +73,17 @@ public class BalancedSymbolChecker {
 				}
 			}
 			
+			// we also have to control for the case where we have single quotation marks
+			// around the opening/closing characters
+			else if (curr == '\'') {
+				if (text.charAt(i+1) == '(' || text.charAt(i+1) == '[' || text.charAt(i+1) == '{' ||
+					text.charAt(i+1) == ')' || text.charAt(i+1) == ']' || text.charAt(i+1) == '}') {
+					if (text.charAt(i+2) == '\'') {
+						i+=2;
+					}
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
 			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
@@ -255,6 +266,126 @@ public class BalancedSymbolChecker {
 				}
 			}
 			
+			// we also have to control for the case where we have single quotation marks
+			// around the opening/closing characters
+			else if (curr == '\'') {
+				if (text.charAt(i+1) == '(' || text.charAt(i+1) == '[' || text.charAt(i+1) == '{' ||
+					text.charAt(i+1) == ')' || text.charAt(i+1) == ']' || text.charAt(i+1) == '}') {
+					if (text.charAt(i+2) == '\'') {
+						// we still want to add these values to the return string, but
+						// we DO NOT want to add the open/close chars to the stack
+						ret += curr;
+						ret += text.charAt(i+1);
+						ret += text.charAt(i+2);
+						i+=2;
+					}
+				}
+			}
+			
+			// if curr is an opening char, add to the stack
+			else if (curr == '(' || curr == '[' || curr == '{') {
+				stack.push(curr);
+				ret += curr;
+			} 
+			// else if curr is a closing char, then we need to see if it closes the previous opening char
+			// if it DOES NOT, then the string is NOT nested properly and we can return false
+			// if it DOES, then we can pop the opening brace off the stack and continue
+			else if (curr == ')') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
+				if (stack.top() == '(') {
+					stack.pop();
+					ret += curr;
+				} else {
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
+				}
+			} else if (curr == ']') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
+				if (stack.top() == '[') {
+					stack.pop();
+					ret += curr;
+				} else {
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
+				}
+			} else if (curr == '}') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
+				if (stack.top() == '{') {
+					stack.pop();
+					ret += curr;
+				} else {
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
+				}
+			} 
+			// if none of the above scenarios have occurred, then it is a normal character
+			// and can be printed without any further debilitation
+			else { 
+				ret += curr; 
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Identical to the logic of the previous method, except that in this one, rather than
+	 * printing each character out to the console, it stores the result in a String, which
+	 * is then returned at the end.
+	 * 
+	 * This method now, in addition to up above, removes code comments
+	 * @param String
+	 * @return String
+	 * @throws IllegalArgumentException
+	 */
+	public String keepComments() throws IllegalArgumentException {
+		if (text.length() == 0 || text == null)
+			throw new IllegalArgumentException("String provided cannot be null or have a length of 0");
+		
+		String ret = "";
+		LinkedListStack<Character> stack = new LinkedListStack<Character>();
+		
+		for (int i = 0; i < text.length(); i++) {
+			char curr = text.charAt(i);
+			
+			// if curr is a slash, that might indicate the beginning of a code comment,
+			// in which case we have to ignore that section
+//			if (curr == '/') {
+//				// 1. single line comment
+//				if (text.charAt(i+1) == '/') {
+//					// cycle through the file until a newline character (\n) is reached
+//					i++;
+//					while((text.charAt(i) != '\n') && i < text.length()) {
+//						i++;
+//					}
+//				}
+//				// 2. code comment block
+//				else if (text.charAt(i+1) == '*') {
+//					i++;
+//					while(!(text.charAt(i) == '*' && text.charAt(i+1) == '/') && i < text.length()) {
+//						i++;
+//					}
+//				}
+//			}
+			
+			// we also have to control for the case where we have single quotation marks
+			// around the opening/closing characters
+			if (curr == '\'') {
+				if (text.charAt(i+1) == '(' || text.charAt(i+1) == '[' || text.charAt(i+1) == '{' ||
+					text.charAt(i+1) == ')' || text.charAt(i+1) == ']' || text.charAt(i+1) == '}') {
+					if (text.charAt(i+2) == '\'') {
+						// we still want to add these values to the return string, but
+						// we DO NOT want to add the open/close chars to the stack
+						ret += curr;
+						ret += text.charAt(i+1);
+						ret += text.charAt(i+2);
+						i+=2;
+					}
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
 			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
@@ -305,8 +436,8 @@ public class BalancedSymbolChecker {
 
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
-		BalancedSymbolChecker BSC = new BalancedSymbolChecker("src/balancedSymbols/BalancedSymbolChecker.java");
-		
+//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("src/balancedSymbols/BalancedSymbolChecker.java");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("Comments.java");
 		System.out.println("==========================================================");
 		System.out.println("Verifying if properly nested...");
 		System.out.println("==========================================================");
