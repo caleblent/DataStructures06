@@ -32,9 +32,49 @@ public class BalancedSymbolChecker {
 			System.err.println("Error reading from file: " + e.getMessage());
 		}
 	}
+	
+	public static String findCharsOfInterest(String text) {
+		String ret = "";
+		int length = text.length();
+		for (int i = 0; i < length; i++) {
+			if (text.charAt(i) == '(' || text.charAt(i) == ')' ||
+				text.charAt(i) == '[' || text.charAt(i) == ']' ||
+				text.charAt(i) == '{' || text.charAt(i) == '}') {
+				ret += text.charAt(i);
+			}
+		}
+		return ret;
+	}
+	
+	public static void createStackFromSpecialChars(String str) {
+		LinkedListStack<Character> stack = new LinkedListStack<Character>();
+		
+		int length = str.length();
+		for (int i = 0; i < length; i++) {
+			stack.push(str.charAt(i));
+		}
+		System.out.println(stack.toString());
+	}
 
 	public static void main(String[] args) {
-		new BalancedSymbolChecker("ValidClass.java");
+//		System.out.println("Entering...");
+//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
+//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
+		
+		System.out.println("=============================");
+		System.out.println("Printing whole file...");
+		System.out.println("=============================");
+		System.out.println(BSC.text);
+		System.out.println("=============================");
+		System.out.println("Printing parentheses, brackets, and braces...");
+		System.out.println("=============================");
+		System.out.println(findCharsOfInterest(BSC.text));
+		System.out.println("=============================");
+		System.out.println("Creating a stack object...");
+		System.out.println("=============================");
+		createStackFromSpecialChars(findCharsOfInterest(BSC.text));
+		
 	}
 	
 }
