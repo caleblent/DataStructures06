@@ -84,6 +84,16 @@ public class BalancedSymbolChecker {
 				}
 			}
 			
+			// we need to handle string literals, as they could contain parentheses, brackets, and braces
+			else if (curr == '"') {
+				// cycle through the file until another closing string is found
+				// TODO: maybe the double quotation marks could be added to the stack?
+				i++;
+				while((text.charAt(i) != '"') && i < text.length()) {
+					i++;
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
 			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
@@ -172,8 +182,52 @@ public class BalancedSymbolChecker {
 		for (int i = 0; i < str.length(); i++) {
 			char curr = str.charAt(i);
 			
+			// if curr is a slash, that might indicate the beginning of a code comment,
+			// in which case we have to ignore that section
+			if (curr == '/') {
+				// 1. single line comment
+				if (str.charAt(i+1) == '/') {
+					// cycle through the file until a newline character (\n) is reached
+					i++;
+					while((str.charAt(i) != '\n') && i < str.length()) {
+						i++;
+					}
+				}
+				// 2. code comment block
+				else if (str.charAt(i+1) == '*') {
+					i++;
+					while(!(str.charAt(i) == '*' && str.charAt(i+1) == '/') && i < str.length()) {
+						i++;
+					}
+				}
+			}
+			
+			// we also have to control for the case where we have single quotation marks
+			// around the opening/closing characters
+			else if (curr == '\'') {
+				if (str.charAt(i+1) == '(' || str.charAt(i+1) == '[' || str.charAt(i+1) == '{' ||
+					str.charAt(i+1) == ')' || str.charAt(i+1) == ']' || str.charAt(i+1) == '}') {
+					if (str.charAt(i+2) == '\'') {
+						// we still want to add these values to the return string, but
+						// we DO NOT want to add the open/close chars to the stack
+						System.out.print(curr+ str.charAt(i+1) + str.charAt(i+2));
+						i+=2;
+					}
+				}
+			}
+			
+			// we need to handle string literals, as they could contain parentheses, brackets, and braces
+			else if (curr == '"') {
+				// cycle through the file until another closing string is found
+				// TODO: maybe the double quotation marks could be added to the stack?
+				i++;
+				while((str.charAt(i) != '"') && i < str.length()) {
+					i++;
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
-			if (curr == '(' || curr == '[' || curr == '{') {
+			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
 				System.out.print(curr);
 			} 
@@ -282,6 +336,16 @@ public class BalancedSymbolChecker {
 				}
 			}
 			
+			// we need to handle string literals, as they could contain parentheses, brackets, and braces
+			else if (curr == '"') {
+				// cycle through the file until another closing string is found
+				// TODO: maybe the double quotation marks could be added to the stack?
+				i++;
+				while((text.charAt(i) != '"') && i < text.length()) {
+					i++;
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
 			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
@@ -335,7 +399,7 @@ public class BalancedSymbolChecker {
 	 * printing each character out to the console, it stores the result in a String, which
 	 * is then returned at the end.
 	 * 
-	 * This method now, in addition to up above, removes code comments
+	 * This method now, in addition to up above, KEEPS code comments
 	 * @param String
 	 * @return String
 	 * @throws IllegalArgumentException
@@ -437,9 +501,9 @@ public class BalancedSymbolChecker {
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("src/balancedSymbols/BalancedSymbolChecker.java");
-		BalancedSymbolChecker BSC = new BalancedSymbolChecker("Comments.java");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
 		System.out.println("==========================================================");
-		System.out.println("Verifying if properly nested...");
+		System.out.println("Doing stuff below...");
 		System.out.println("==========================================================");
 		System.out.println(BSC.removeComments());
 		System.out.println("==========================================================");
