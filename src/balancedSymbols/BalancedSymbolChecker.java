@@ -118,7 +118,7 @@ public class BalancedSymbolChecker {
 	 * Beginning with the logic of the previous method verifyIfProperlyNested(),
 	 * this one seeks to do similarly but by outputting each character individually until
 	 * an incorrect nesting is spotted
-	 * @param str
+	 * @param String
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
@@ -144,7 +144,8 @@ public class BalancedSymbolChecker {
 					stack.pop();
 					System.out.print(curr);
 				} else {
-					System.out.print("\n\nERROR encountered with: '" + curr + "'");
+					//ERROR: cannot use } to close (
+					System.out.print("\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'");
 					return;
 				}
 			} else if (curr == ']') {
@@ -152,7 +153,7 @@ public class BalancedSymbolChecker {
 					stack.pop();
 					System.out.print(curr);
 				} else {
-					System.out.print("\n\nERROR encountered with: '" + curr + "'");
+					System.out.print("\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'");
 					return;
 				}
 			} else if (curr == '}') {
@@ -160,7 +161,7 @@ public class BalancedSymbolChecker {
 					stack.pop();
 					System.out.print(curr);
 				} else {
-					System.out.print("\n\nERROR encountered with: '" + curr + "'");
+					System.out.print("\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'");
 					return;
 				}
 			} 
@@ -203,24 +204,21 @@ public class BalancedSymbolChecker {
 					stack.pop();
 					ret += curr;
 				} else {
-					ret += "\n\nERROR encountered with: '" + curr + "'";
-					return ret;
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
 				}
 			} else if (curr == ']') {
 				if (stack.top() == '[') {
 					stack.pop();
 					ret += curr;
 				} else {
-					ret += "\n\nERROR encountered with: '" + curr + "'";
-					return ret;
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
 				}
 			} else if (curr == '}') {
 				if (stack.top() == '{') {
 					stack.pop();
 					ret += curr;
 				} else {
-					ret += "\n\nERROR encountered with: '" + curr + "'";
-					return ret;
+					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
 				}
 			} 
 			// if none of the above scenarios have occurred, then it is a normal character
@@ -234,8 +232,8 @@ public class BalancedSymbolChecker {
 
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
-		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
-//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
+//		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
 		
 //		System.out.println("\n==========================================================");
