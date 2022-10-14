@@ -34,7 +34,12 @@ public class BalancedSymbolChecker {
 	}
 	
 	/**
-	 * Non-static version
+	 * Goes through this BalancedSymbolChecker object's text attribute character by character,
+	 * adding opening and closing characters (parentheses, brackets, braces) to a stack object.
+	 * Handles the logic to ensure the nesting is done properly.
+	 * 
+	 * Returns FALSE on first violation of nesting rules, and only returns TRUE if it manages
+	 * to pass all of the checks and make it to the end of the method.
 	 * @param String
 	 * @return boolean
 	 * @throws IllegalArgumentException
@@ -114,71 +119,15 @@ public class BalancedSymbolChecker {
 		for (int i = 0; i < length; i++) {
 			stack.push(str.charAt(i));
 		}
-//		System.out.println(stack.toString());
+		
 		return stack;
 	}
 	
-	/**
-	 * Beginning with the logic of the previous method createStackFromSpecialChars(),
-	 * this one seeks to do similarly but with logic checks to ensure nesting is proper
-	 * @param String
-	 * @return boolean
-	 * @throws IllegalArgumentException
-	 */
-	public static boolean verifyIfProperlyNested(String str) throws IllegalArgumentException {
-		if (str.length() == 0 || str == null)
-			throw new IllegalArgumentException("String provided cannot be null or have a length of 0");
-		
-		LinkedListStack<Character> stack = new LinkedListStack<Character>();
-		
-		for (int i = 0; i < str.length(); i++) {
-			char curr = str.charAt(i);
-			
-			// if curr is an opening char, add to the stack
-			if (curr == '(' || curr == '[' || curr == '{') {
-				stack.push(curr);
-				System.out.println(stack.toStringReverse());
-			} 
-			// else if curr is a closing char, then we need to see if it closes the previous opening char
-			// if it DOES NOT, then the string is NOT nested properly and we can return false
-			// if it DOES, then we can pop the opening brace off the stack and continue
-			else if (curr == ')') {
-				if (stack.top() == '(') {
-					stack.pop();
-					System.out.println(stack.toStringReverse());
-				} else {
-					System.out.println("Top: " + stack.top());
-					System.out.println("Attempted to add: " + curr);
-					return false;
-				}
-			} else if (curr == ']') {
-				if (stack.top() == '[') {
-					stack.pop();
-					System.out.println(stack.toStringReverse());
-				} else {
-					System.out.println("Top: " + stack.top());
-					System.out.println("Attempted to add: " + curr);
-					return false;
-				}
-			} else if (curr == '}') {
-				if (stack.top() == '{') {
-					stack.pop();
-					System.out.println(stack.toStringReverse());
-				} else {
-					System.out.println("Top: " + stack.top());
-					System.out.println("Attempted to add: " + curr);
-					return false;
-				}
-			} // else { do nothing }
-			
-		}
-		return true;
-	}
 	
 	/**
-	 * Beginning with the logic of the previous method verifyIfProperlyNested(),
-	 * this one seeks to do similarly but by outputting each character individually until
-	 * an incorrect nesting is spotted
+	 * This method goes through the String passed to it character by character, outputting
+	 * each character to the console and handling (, ), [, ], {, } character with a stack.
+	 * Outputs an ERROR message if there is an invalid nesting within the file.
 	 * @param String
 	 * @return
 	 * @throws IllegalArgumentException
