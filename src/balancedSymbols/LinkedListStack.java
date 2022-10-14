@@ -83,8 +83,35 @@ public class LinkedListStack<T> implements DSStack<T> {
 			if (curr.next == null)
 				flag = false;
 			else 
-//				str += " -> ";
-				str += " ";
+				str += " -> ";
+//				str += " ";
+			
+			curr = curr.next;
+		}
+		
+		return str;
+	}
+	
+	public String toStringReverse() {
+		String str = "";
+		
+		
+		if (isEmpty()) {
+			return "Empty";
+		}
+		
+		ListNode curr = top.next;
+		
+		boolean flag = true;
+		while(flag) {
+			
+			str = curr.data + str;
+			
+			if (curr.next == null)
+				flag = false;
+			else 
+				str = " <- " + str;
+//				str += " ";
 			
 			curr = curr.next;
 		}

@@ -56,6 +56,65 @@ public class BalancedSymbolChecker {
 //		System.out.println(stack.toString());
 		return stack;
 	}
+	
+	/**
+	 * Beginning with the logic of the previous method createStackFromSpecialChars(),
+	 * this one seeks to do similarly but with logic checks to ensure nesting is proper
+	 * @param str
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static boolean verifyIfProperlyNested(String str) throws IllegalArgumentException {
+		if (str.length() == 0 || str == null)
+			throw new IllegalArgumentException("String provided cannot be null or have a length of 0");
+		
+		LinkedListStack<Character> stack = new LinkedListStack<Character>();
+		
+//		stack.push(str.charAt(0));
+//		System.out.println("Pushing : " + str.charAt(0));
+		
+		for (int i = 0; i < str.length(); i++) {
+//			char prev = str.charAt(i-1);
+			char curr = str.charAt(i);
+			
+			// if curr is an opening char, add to the stack
+			if (curr == '(' || curr == '[' || curr == '{') {
+				stack.push(curr);
+				System.out.println(stack.toStringReverse());
+//				System.out.println("Pushing : " + curr);
+			} 
+			// else if curr is a closing char, then we need to see if it closes the previous opening char
+			// if it DOES NOT, then the string is NOT nested properly and we can return false
+			// if it DOES, then we can pop the opening brace off the stack and continue
+			else if (curr == ')') {
+				if (stack.top() == '(') {
+					stack.pop();
+					System.out.println(stack.toStringReverse());
+//					System.out.println("Popping : " + stack.pop()); // pops it off the stack, and also displays it
+				} else {
+					return false;
+				}
+			} else if (curr == ']') {
+				if (stack.top() == '[') {
+					stack.pop();
+					System.out.println(stack.toStringReverse());
+//					System.out.println("Popping : " + stack.pop()); // pops it off the stack, and also displays it
+				} else {
+					return false;
+				}
+			} else if (curr == '}') {
+				if (stack.top() == '{') {
+					stack.pop();
+					System.out.println(stack.toStringReverse());
+//					System.out.println("Popping : " + stack.pop()); // pops it off the stack, and also displays it
+				} else {
+					return false;
+				}
+			} // else { do nothing }
+			
+		}
+		return true;
+	}
 
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
@@ -63,10 +122,10 @@ public class BalancedSymbolChecker {
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
 		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
 		
-		System.out.println("\n==========================================================");
-		System.out.println("Printing whole file...");
-		System.out.println("==========================================================\n");
-		System.out.println(BSC.text);
+//		System.out.println("\n==========================================================");
+//		System.out.println("Printing whole file...");
+//		System.out.println("==========================================================\n");
+//		System.out.println(BSC.text);
 		System.out.println("\n==========================================================");
 		System.out.println("Printing parentheses, brackets, and braces...");
 		System.out.println("==========================================================\n");
@@ -74,7 +133,8 @@ public class BalancedSymbolChecker {
 		System.out.println("\n==========================================================");
 		System.out.println("Creating a stack object...");
 		System.out.println("==========================================================\n");
-		System.out.println(createStackFromSpecialChars(findCharsOfInterest(BSC.text)).toString());
+		System.out.println(createStackFromSpecialChars(findCharsOfInterest(BSC.text)).toStringReverse());
+		System.out.println("Nested properly? " + verifyIfProperlyNested(findCharsOfInterest(BSC.text)));
 		System.out.println("\n==========================================================");
 		System.out.println("END");
 		System.out.println("==========================================================\n");
