@@ -33,6 +33,67 @@ public class BalancedSymbolChecker {
 		}
 	}
 	
+	/**
+	 * Non-static version
+	 * @param String
+	 * @return boolean
+	 * @throws IllegalArgumentException
+	 */
+	public boolean verifyIfProperlyNested() throws IllegalArgumentException {
+		if (text.length() == 0 || text == null)
+			throw new IllegalArgumentException("String provided cannot be null or have a length of 0");
+		
+		LinkedListStack<Character> stack = new LinkedListStack<Character>();
+		
+		for (int i = 0; i < text.length(); i++) {
+			char curr = text.charAt(i);
+			
+			// if curr is an opening char, add to the stack
+			if (curr == '(' || curr == '[' || curr == '{') {
+				stack.push(curr);
+			} 
+			// else if curr is a closing char, then we need to see if it closes the previous opening char
+			// if it DOES NOT, then the string is NOT nested properly and we can return false
+			// if it DOES, then we can pop the opening brace off the stack and continue
+			else if (curr == ')') {
+				if (stack.isEmpty()) {
+					return false;
+				}
+				if (stack.top() == '(') {
+					stack.pop();
+				} else {
+					return false;
+				}
+			} else if (curr == ']') {
+				if (stack.isEmpty()) {
+					return false;
+				}
+				if (stack.top() == '[') {
+					stack.pop();
+				} else {
+					return false;
+				}
+			} else if (curr == '}') {
+				if (stack.isEmpty()) {
+					return false;
+				}
+				if (stack.top() == '{') {
+					stack.pop();
+				} else {
+					return false;
+				}
+			}
+		}
+		
+		// now we must check to ensure there are no leftover opening chars that
+		// still need to be closed
+		if (!stack.isEmpty()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public static String findCharsOfInterest(String text) {
 		String ret = "";
 		int length = text.length();
@@ -140,6 +201,10 @@ public class BalancedSymbolChecker {
 			// if it DOES NOT, then the string is NOT nested properly and we can return false
 			// if it DOES, then we can pop the opening brace off the stack and continue
 			else if (curr == ')') {
+				if (stack.isEmpty()) {
+					System.out.println("\nERROR: empty stack when trying to add '" + curr + "'");
+					return;
+				}
 				if (stack.top() == '(') {
 					stack.pop();
 					System.out.print(curr);
@@ -149,6 +214,10 @@ public class BalancedSymbolChecker {
 					return;
 				}
 			} else if (curr == ']') {
+				if (stack.isEmpty()) {
+					System.out.println("\nERROR: empty stack when trying to add '" + curr + "'");
+					return;
+				}
 				if (stack.top() == '[') {
 					stack.pop();
 					System.out.print(curr);
@@ -157,6 +226,10 @@ public class BalancedSymbolChecker {
 					return;
 				}
 			} else if (curr == '}') {
+				if (stack.isEmpty()) {
+					System.out.println("\nERROR: empty stack when trying to add '" + curr + "'");
+					return;
+				}
 				if (stack.top() == '{') {
 					stack.pop();
 					System.out.print(curr);
@@ -200,6 +273,9 @@ public class BalancedSymbolChecker {
 			// if it DOES NOT, then the string is NOT nested properly and we can return false
 			// if it DOES, then we can pop the opening brace off the stack and continue
 			else if (curr == ')') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
 				if (stack.top() == '(') {
 					stack.pop();
 					ret += curr;
@@ -207,6 +283,9 @@ public class BalancedSymbolChecker {
 					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
 				}
 			} else if (curr == ']') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
 				if (stack.top() == '[') {
 					stack.pop();
 					ret += curr;
@@ -214,6 +293,9 @@ public class BalancedSymbolChecker {
 					return ret += "\n\nERROR: cannot use '" + curr + "' to close '" + stack.top() + "'";
 				}
 			} else if (curr == '}') {
+				if (stack.isEmpty()) {
+					return ret += "\nERROR: empty stack when trying to add '" + curr + "'";
+				}
 				if (stack.top() == '{') {
 					stack.pop();
 					ret += curr;
@@ -233,7 +315,7 @@ public class BalancedSymbolChecker {
 	public static void main(String[] args) {
 //		System.out.println("Entering...");
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("ValidClass.java");
-		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
+		BalancedSymbolChecker BSC = new BalancedSymbolChecker("invalidFiles/invalid2.txt");
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
 		
 //		System.out.println("\n==========================================================");
