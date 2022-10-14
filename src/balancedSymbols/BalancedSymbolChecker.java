@@ -278,6 +278,7 @@ public class BalancedSymbolChecker {
 				System.out.print(curr); 
 			}
 		}
+		System.out.print("\n!!! Balanced !!!\n");
 	}
 	
 	/**
@@ -391,7 +392,7 @@ public class BalancedSymbolChecker {
 				ret += curr; 
 			}
 		}
-		return ret;
+		return ret += "\n!!! Balanced !!!\n";
 	}
 	
 	/**
@@ -450,6 +451,16 @@ public class BalancedSymbolChecker {
 				}
 			}
 			
+			// we need to handle string literals, as they could contain parentheses, brackets, and braces
+			else if (curr == '"') {
+				// cycle through the file until another closing string is found
+				// TODO: maybe the double quotation marks could be added to the stack?
+				i++;
+				while((text.charAt(i) != '"') && i < text.length()) {
+					i++;
+				}
+			}
+			
 			// if curr is an opening char, add to the stack
 			else if (curr == '(' || curr == '[' || curr == '{') {
 				stack.push(curr);
@@ -495,7 +506,7 @@ public class BalancedSymbolChecker {
 				ret += curr; 
 			}
 		}
-		return ret;
+		return ret += "\n!!! Balanced !!!\n";
 	}
 
 	public static void main(String[] args) {
@@ -507,12 +518,10 @@ public class BalancedSymbolChecker {
 		System.out.println("==========================================================");
 		System.out.println(BSC.removeComments());
 		System.out.println("==========================================================");
-		System.out.println(BSC.verifyIfProperlyNested());
-//		System.out.println("\n==========================================================");
-//		System.out.println(returnEachCharUntilError(BSC.text));
-//		System.out.println("==========================================================");
-//		System.out.println("END");
-//		System.out.println("==========================================================\n");
+		System.out.println(BSC.keepComments());
+		System.out.println("==========================================================");
+		printEachCharUntilError(BSC.text);
+		System.out.println("==========================================================");
 		
 	}
 	
