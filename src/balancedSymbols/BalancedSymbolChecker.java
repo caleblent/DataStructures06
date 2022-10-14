@@ -46,14 +46,15 @@ public class BalancedSymbolChecker {
 		return ret;
 	}
 	
-	public static void createStackFromSpecialChars(String str) {
+	public static LinkedListStack<Character> createStackFromSpecialChars(String str) {
 		LinkedListStack<Character> stack = new LinkedListStack<Character>();
 		
 		int length = str.length();
 		for (int i = 0; i < length; i++) {
 			stack.push(str.charAt(i));
 		}
-		System.out.println(stack.toString());
+//		System.out.println(stack.toString());
+		return stack;
 	}
 
 	public static void main(String[] args) {
@@ -62,18 +63,21 @@ public class BalancedSymbolChecker {
 //		BalancedSymbolChecker BSC = new BalancedSymbolChecker("BadNesting.java");
 		BalancedSymbolChecker BSC = new BalancedSymbolChecker("SmallFile.txt");
 		
-		System.out.println("=============================");
+		System.out.println("\n==========================================================");
 		System.out.println("Printing whole file...");
-		System.out.println("=============================");
+		System.out.println("==========================================================\n");
 		System.out.println(BSC.text);
-		System.out.println("=============================");
+		System.out.println("\n==========================================================");
 		System.out.println("Printing parentheses, brackets, and braces...");
-		System.out.println("=============================");
+		System.out.println("==========================================================\n");
 		System.out.println(findCharsOfInterest(BSC.text));
-		System.out.println("=============================");
+		System.out.println("\n==========================================================");
 		System.out.println("Creating a stack object...");
-		System.out.println("=============================");
-		createStackFromSpecialChars(findCharsOfInterest(BSC.text));
+		System.out.println("==========================================================\n");
+		System.out.println(createStackFromSpecialChars(findCharsOfInterest(BSC.text)).toString());
+		System.out.println("\n==========================================================");
+		System.out.println("END");
+		System.out.println("==========================================================\n");
 		
 	}
 	

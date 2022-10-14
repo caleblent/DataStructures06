@@ -83,7 +83,8 @@ public class LinkedListStack<T> implements DSStack<T> {
 			if (curr.next == null)
 				flag = false;
 			else 
-				str += " -> ";
+//				str += " -> ";
+				str += " ";
 			
 			curr = curr.next;
 		}
